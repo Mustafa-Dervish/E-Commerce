@@ -451,6 +451,7 @@ const HomeScreen = () => {
                   source={{ uri: item?.image }}
                 />
 
+                <View
                   style={{
                     backgroundColor: "#E31837",
                     paddingVertical: 5,
