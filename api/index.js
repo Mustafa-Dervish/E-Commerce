@@ -288,6 +288,7 @@ app.get("/orders/:userId", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 app.post("/products", async (req, res) => {
   const product = new Product(req.body);
   try {
@@ -350,3 +351,29 @@ app.delete("/products/:productId", async (req, res) => {
     res.status(500).send({ message: "Error deleting product" });
   }
 });
+=======
+app.post("/update-password", async (req, res) => {
+  try {
+    const { userId, oldPassword, newPassword } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    // Directly compare the old password with the stored password
+    if (oldPassword !== user.password) {
+      return res.status(401).send({ message: "Invalid old password" });
+    }
+
+    // Update the password (Consider hashing the new password here)
+    user.password = newPassword;
+    await user.save();
+
+    res.send({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Error updating password" });
+  }
+});
+>>>>>>> aa0a57a163e86cc4b2164187fe8b606c1c127c50
