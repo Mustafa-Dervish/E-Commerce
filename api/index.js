@@ -287,3 +287,66 @@ app.get("/orders/:userId", async (req, res) => {
     res.status(500).json({ message: "Error" });
   }
 });
+
+app.post("/products", async (req, res) => {
+  const product = new Product(req.body);
+  try {
+    await product.save();
+    res.status(201).send(product);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+app.get("/products", async (req, res) => {
+  try {
+    const product = await Product.find({});
+    // console.log("productId", productId);
+    // if (!product) {
+    //   return res.status(404).send({ message: "Product not found" });
+    // }
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).send({ message: "Error retrieving product", error: error });
+  }
+});
+app.get("/products/:productId", async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.productId);
+    // console.log("productId", productId);
+    if (!product) {
+      return res.status(404).send({ message: "Product not found" });
+    }
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).send({ message: "Error retrieving product", error: error });
+  }
+});
+
+app.put("/products/:productId", async (req, res) => {
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.productId,
+      req.body,
+      { new: true } // returns the updated document
+    );
+    if (!updatedProduct) {
+      return res.status(404).send({ message: "Product not found" });
+    }
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    res.status(500).send({ message: "Error updating product" });
+  }
+});
+
+app.delete("/products/:productId", async (req, res) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.productId);
+    if (!product) {
+      return res.status(404).send({ message: "Product not found" });
+    }
+    res.status(200).send({ message: "Product deleted successfully" });
+  } catch (error) {
+    res.status(500).send({ message: "Error deleting product" });
+  }
+});
