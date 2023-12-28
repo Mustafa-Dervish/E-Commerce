@@ -83,8 +83,23 @@ const RegisterScreen = () => {
         </View>
 
         <View style={{ marginTop: 70 }}>
-    
-            
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 5,
+              backgroundColor: "#D0D0D0",
+              paddingVertical: 5,
+              borderRadius: 5,
+              marginTop: 30,
+            }}
+          >
+            <Ionicons
+              name="ios-person"
+              size={24}
+              color="gray"
+              style={{ marginLeft: 8 }}
+            />
             <TextInput
               value={name}
               onChangeText={(text) => setName(text)}
