@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const bcrypt = require("bcrypt");
 
 const app = express();
 const port = 8000;
@@ -11,6 +12,7 @@ app.use(cors());
 
 // app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.json());
 
 const jwt = require("jsonwebtoken");
 app.listen(port, () => {
@@ -31,6 +33,7 @@ mongoose
 
 const User = require("./models/user");
 const Order = require("./models/order");
+const Product = require("./models/Product");
 
 const sendVerificationEmail = async (email, verificationToken) => {
   // Create a Nodemailer transporter
@@ -45,10 +48,10 @@ const sendVerificationEmail = async (email, verificationToken) => {
 
   // Compose the email message
   const mailOptions = {
-    from: "amazon.com",
+    from: "tuquoise.com",
     to: email,
     subject: "Email Verification",
-    text: `Please click the following link to verify your email:  https://96c7-82-222-61-37.ngrok-free.app/verify/${verificationToken}`,
+    text: `Please click the following link to verify your email: https://9cb5-195-142-243-198.ngrok-free.app/verify/${verificationToken}`,
   };
 
   // Send the email
@@ -147,9 +150,12 @@ app.post("/login", async (req, res) => {
     }
 
     // generate token
-    const token = jwt.sign({ userId: user._id }, secretKey);
+    const token = jwt.sign(
+      { userId: user._id, isAdmin: user.isAdmin },
+      secretKey
+    );
 
-    res.status(200).send({ token });
+    res.status(200).send({ token, isAdmin: user.isAdmin });
   } catch (error) {
     res.status(500).send({ message: "Login Failed" });
   }
@@ -171,7 +177,6 @@ app.post("/admin/login", async (req, res) => {
   // Generate and send token, consider using JWT
   // ...
 });
-
 
 //endpoint to store a new address to the backend
 app.post("/addresses", async (req, res) => {
@@ -288,7 +293,77 @@ app.get("/orders/:userId", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
+// Endpoint to update user password
+// app.post("/update-password", async (req, res) => {
+//   try {
+//     const { userId, oldPassword, newPassword } = req.body;
+
+//     console.log("UserID:", userId); // Log user ID
+//     console.log("Old Password:", oldPassword); // Log old password from request
+//     console.log("new Password:", newPassword); // Log old password from request
+
+//     if (!oldPassword || !newPassword) {
+//       return res.status(400).send({ message: "Missing password fields" });
+//     }
+
+//     const user = await User.findById(userId);
+
+//     if (!user) {
+//       return res.status(404).send({ message: "User not found" });
+//     }
+//     console.log("user password", user.password); // Log old password from request
+//     const isMatch = await bcrypt.compare(oldPassword, user.password);
+//     console.log("is Match", isMatch);
+//     console.log(oldPassword,user.password);
+
+//     if (!isMatch) {
+//       return res.status(401).send({ message: "Invalid old password" });
+//     }
+
+//     await user.save();
+
+//     res.send({ message: "Password updated successfully" });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send({ message: "Error updating password", error: error });
+//   }
+// });
+
+app.put("/update-password", async (req, res) => {
+  try {
+    const { userId, oldPassword, newPassword } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    // Directly compare the old password with the stored password
+    if (oldPassword !== user.password) {
+      return res.status(401).send({ message: "Invalid old password" });
+    }
+
+    // Update the password (Consider hashing the new password here)
+    user.password = newPassword;
+    await user.save();
+
+    res.send({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Error updating password" });
+  }
+});
+
+// app.get("/api/users", async (req, res) => {
+//   // Authentication and authorization logic here
+//   if (!isAdmin(req.user)) {
+//     return res.status(403).send("Access denied");
+//   }
+
+//   const users = await User.find(); // Fetch users from the database
+//   res.json(users);
+// });
+
 app.post("/products", async (req, res) => {
   const product = new Product(req.body);
   try {
@@ -348,32 +423,6 @@ app.delete("/products/:productId", async (req, res) => {
     }
     res.status(200).send({ message: "Product deleted successfully" });
   } catch (error) {
-    res.status(500).send({ message: "Error deleting product" });
-  }
-});
-=======
-app.post("/update-password", async (req, res) => {
-  try {
-    const { userId, oldPassword, newPassword } = req.body;
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
-
-    // Directly compare the old password with the stored password
-    if (oldPassword !== user.password) {
-      return res.status(401).send({ message: "Invalid old password" });
-    }
-
-    // Update the password (Consider hashing the new password here)
-    user.password = newPassword;
-    await user.save();
-
-    res.send({ message: "Password updated successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ message: "Error updating password" });
+    res.status(500).send({ message: "Error deleting product" });
   }
 });
->>>>>>> aa0a57a163e86cc4b2164187fe8b606c1c127c50

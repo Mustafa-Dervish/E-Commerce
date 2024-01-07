@@ -15,6 +15,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import MyImage from "../assets/mah-01.png";
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
@@ -30,9 +31,9 @@ const RegisterScreen = () => {
 
     // send a post request  to the backend API
     axios
-      .post("https://96c7-82-222-61-37.ngrok-free.app/register", user)
+      .post("https://9cb5-195-142-243-198.ngrok-free.app/register", user)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         Alert.alert(
           "Registration successful",
           "You have been registered Successfully"
@@ -60,11 +61,12 @@ const RegisterScreen = () => {
     >
       <View>
         <Image
-          style={{ width: 150, height: 100 }}
-          source={{
-            uri:
-              "https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png",
-          }}
+          style={{ width: 150, height: 100, marginTop: 18 }}
+          // source={{
+          //   uri:
+          //     "https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png",
+          // }}
+          source={MyImage}
         />
       </View>
 

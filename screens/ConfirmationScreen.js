@@ -14,7 +14,37 @@ import { useNavigation } from "@react-navigation/native";
 import { UserType } from "../UserContext";
 import { useDispatch, useSelector } from "react-redux";
 import { cleanCart } from "../redux/CartReduccer";
+import * as Notifications from "expo-notifications";
+
 const ConfirmationScreen = () => {
+  // useEffect(() => {
+  //   const subscription = Notifications.addNotificationReceivedListener(
+  //     (notification) => {
+  //       console.log("Notification Received:", notification);
+  //       // Handle the received notification
+  //     }
+  //   );
+
+  //   return () => subscription.remove();
+  // }, []);
+
+  Notifications.setNotificationHandler({
+    handleNotification: async () => {
+      return {
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+        shouldShowAlert: true,
+      };
+    },
+  });
+
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync().then((token) => {
+  //     console.log("Received push token:", token); // Log the token here
+  //   });
+  //   // ... other code ...
+  // }, []);
+
   const steps = [
     { title: "Address", content: "Address Form" },
     { title: "Delivery", content: "Delivery Options" },
@@ -37,7 +67,7 @@ const ConfirmationScreen = () => {
   const fetchAddresses = async () => {
     try {
       const response = await axios.get(
-        `https://7eda-82-222-61-36.ngrok-free.app/addresses/${userId}`
+        `https://9cb5-195-142-243-198.ngrok-free.app/addresses/${userId}`
       );
       const { addresses } = response.data;
 
@@ -63,19 +93,33 @@ const ConfirmationScreen = () => {
       };
 
       const response = await axios.post(
-        "https://96c7-82-222-61-37.ngrok-free.app/orders",
+        "https://9cb5-195-142-243-198.ngrok-free.app/orders",
         orderData
       );
       if (response.status === 200) {
         navigation.navigate("Order");
         dispatch(cleanCart());
         console.log("order created successfully", response.data);
+        // Schedule a local notification
+        await triggerNotificationHandler();
       } else {
         console.log("error creating order", response.data);
       }
     } catch (error) {
       console.log("errror", error);
     }
+  };
+
+  const triggerNotificationHandler = () => {
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Your order has been palced!",
+        body: "thank you for shopping !",
+      },
+      trigger: {
+        seconds: 2,
+      },
+    });
   };
 
   return (
@@ -91,7 +135,7 @@ const ConfirmationScreen = () => {
         >
           {steps?.map((step, index) => (
             <View
-              //   key={index}
+              key={index}
               style={{ justifyContent: "center", alignItems: "center" }}
             >
               {index > 0 && (

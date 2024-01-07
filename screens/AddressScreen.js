@@ -55,7 +55,7 @@ const AddressScreen = () => {
     };
 
     axios
-      .post("https://96c7-82-222-61-37.ngrok-free.app/addresses", {
+      .post("https://9cb5-195-142-243-198.ngrok-free.app/addresses", {
         userId,
         address,
       })
@@ -78,7 +78,7 @@ const AddressScreen = () => {
       });
   };
 
-  console.log("userId is: ", userId);
+  // console.log("userId is: ", userId);
 
   return (
     <ScrollView style={{ marginTop: 50 }}>

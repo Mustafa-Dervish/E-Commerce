@@ -15,6 +15,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MyImage from "../assets/mah-01.png";
+import { isAction } from "redux";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -42,13 +44,35 @@ const LoginScreen = () => {
     };
 
     axios
-      .post("https://96c7-82-222-61-37.ngrok-free.app/login", user)
+      .post("https://9cb5-195-142-243-198.ngrok-free.app/login", user)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         const token = response.data.token;
-        AsyncStorage.setItem("authToken", token);
-        navigation.replace("Main");
+        const isAdmin = response.data.isAdmin;
+
+        // console.log("-------------data------", response);
+        // console.log("-------------admin", isAdmin);
+        //   AsyncStorage.setItem("authToken", token);
+        //   if (isAdmin) {
+        //     navigation.replace("AdminMain"); // Navigate to the Admin screen
+        //   } else {
+        //     navigation.replace("Main"); // Navigate to the regular user screen
+        //   }
+        // })
+        if (typeof isAdmin !== "undefined") {
+          // Store token and handle navigation based on isAdmin
+          AsyncStorage.setItem("authToken", token);
+
+          if (isAdmin) {
+            navigation.replace("AdminMain");
+          } else {
+            navigation.replace("Main");
+          }
+        } else {
+          console.error("isAdmin is undefined in the response");
+        }
       })
+
       .catch((error) => {
         Alert.alert("Login Error", "Invalid Email");
         console.log(error);
@@ -66,11 +90,12 @@ const LoginScreen = () => {
     >
       <View>
         <Image
-          style={{ width: 150, height: 100 }}
-          source={{
-            uri:
-              "https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png",
-          }}
+          style={{ width: 150, height: 100, marginTop: 18 }}
+          // source={{
+          //   uri:
+          //     "https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png",
+          // }}
+          source={MyImage}
         />
       </View>
       <KeyboardAvoidingView>

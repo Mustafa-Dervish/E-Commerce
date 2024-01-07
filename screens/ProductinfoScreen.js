@@ -30,12 +30,12 @@ const ProductinfoScreen = () => {
   const handleFavoritePress = (item) => {
     const isFavorite = favorites.some((favItem) => favItem.id === item.id);
     if (isFavorite) {
-      dispatch(removeFavorite(item.id));
+      dispatch(removeFavorite(item));
     } else {
       dispatch(addFavorite(item));
     }
   };
-  console.log("Favorites:....", favorites);
+  // console.log("Favorites:....", favorites);
 
   const addItemToCart = (item) => {
     setAddedToCart(true);
@@ -46,7 +46,7 @@ const ProductinfoScreen = () => {
   };
 
   const cart = useSelector((state) => state.cart.cart);
-  console.log(cart);
+  // console.log(cart);
   return (
     <ScrollView
       style={{ marginTop: 55, flex: 1, backgroundColor: "white" }}
@@ -84,7 +84,7 @@ const ProductinfoScreen = () => {
         <Feather name="mic" size={24} color="black" />
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {route.params.carouselImages.map((item, index) => (
+        {route.params?.carouselImages.map((item, index) => (
           <ImageBackground
             style={{
               width,
@@ -214,7 +214,7 @@ const ProductinfoScreen = () => {
 
       <View style={{ padding: 10 }}>
         <Text style={{ fontSize: 15, fontWeight: "bold", marginVertical: 5 }}>
-          Total : {route.params.price}TL
+          Total : {route?.params?.price}TL
         </Text>
         <Text style={{ color: "#00CED1", alignSelf: "flex-end" }}>
           FREE delivery
