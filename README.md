@@ -1,0 +1,1 @@
+if you want to run the code you have to download the ngrok and run the this line in the cmd "ngrok http http://localhost:8000" and for every requst (post , get ,put ) put the the code that gives you and replace it with
